@@ -17,6 +17,7 @@ import pandas as pd
 
 list = [] # need to create an empty list
 
+# simulate 100k dice rolls, storing each result in the list
 for num in range(1,100000): 
     # define your stats min and max values here
     roll_a = random.randint(10,18) #str
@@ -29,23 +30,28 @@ for num in range(1,100000):
     roll_total = int(roll_a+roll_b+roll_c+roll_d+roll_e+roll_f)
 
     list.append(roll_total)
-    
-list2 = [[i,list.count(i), len(list)] for i in set(list)]
+ 
+#create a new list of the disticnt roll totals, the number of occurrences, and the number of trials
+list2 = [[i,list.count(i), len(list)] for i in set(list)] 
 
+#create a data frame, because i need to practice pandas
 df = pd.DataFrame(data = list2, columns = ['Roll', 'n','total'])
-df['Probability'] = df['n']/df['total']
-df['Cumulative Prob'] = df['Probability'].cumsum()
+df['Probability'] = df['n']/df['total'] #this is the easy way to add a column
+df['Cumulative Prob'] = 1-df['Probability'].cumsum() #add a cumulative total of the probability column
 
-print 'please enter a value between %s and %s' % (df4['Roll'].min(), df4['Roll'].max()) 
+print 'please enter a value between %s and %s' % (df['Roll'].min(), df['Roll'].max()) 
 
-Roll = raw_input(int)
+Roll = raw_input(int) #data type is important here, think it defaults to a string
 
+#use a while loop to make sure the input is within range
 while (int(Roll) < df['Roll'].min() or int(Roll) > df['Roll'].max()):
     print 'not in range, try again'
     Roll = raw_input(int)
 
 output = df['Cumulative Prob'][df['Roll']==int(Roll)]
 
-print 'there is a %s percent chance to roll a %s or higher' % (100-round(output.values*100,2), Roll)
+print 'there is a %s percent chance to roll a %s or higher' % (round(output.values*100,2), Roll)
 
-#print 'there is a %s chance of rolling a %s' % (output, Roll)
+#uncomment the below if you want the full list of values
+#print df['Roll','Probability']
+
