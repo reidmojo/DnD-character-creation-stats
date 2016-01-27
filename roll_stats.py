@@ -18,14 +18,14 @@ import pandas as pd
 list = [] # need to create an empty list
 
 # simulate 100k dice rolls, storing each result in the list
-for num in range(1,100000): 
+for num in range(1,200000): 
     # define your stats min and max values here
-    roll_a = random.randint(10,18) #str
-    roll_b = random.randint(14,18) #dex
-    roll_c = random.randint(6,18) #con
-    roll_d = random.randint(4,18) #int
+    roll_a = random.randint(9,18) #str
+    roll_b = random.randint(3,18) #dex
+    roll_c = random.randint(3,18) #con
+    roll_d = random.randint(3,18) #int
     roll_e = random.randint(3,18) #wis
-    roll_f = random.randint(15,18) #cha
+    roll_f = random.randint(3,18) #cha
 
     roll_total = int(roll_a+roll_b+roll_c+roll_d+roll_e+roll_f)
 
@@ -39,19 +39,28 @@ df = pd.DataFrame(data = list2, columns = ['Roll', 'n','total'])
 df['Probability'] = df['n']/df['total'] #this is the easy way to add a column
 df['Cumulative Prob'] = 1-df['Probability'].cumsum() #add a cumulative total of the probability column
 
-print 'please enter a value between %s and %s' % (df['Roll'].min(), df['Roll'].max()) 
 
-Roll = raw_input(int) #data type is important here, think it defaults to a string
+#allow the user to check multiple rolls
+again = 'y'
 
-#use a while loop to make sure the input is within range
-while (int(Roll) < df['Roll'].min() or int(Roll) > df['Roll'].max()):
-    print 'not in range, try again'
-    Roll = raw_input(int)
+while (again == 'y'):
+    
+    print 'please enter a value between %s and %s' % (df['Roll'].min(), df['Roll'].max()) 
 
-output = df['Cumulative Prob'][df['Roll']==int(Roll)]
+    Roll = raw_input(int) #data type is important here, think it defaults to a string
 
-print 'there is a %s percent chance to roll a %s or higher' % (round(output.values*100,2), Roll)
+    #use a while loop to make sure the input is within range
+    while (int(Roll) < df['Roll'].min() or int(Roll) > df['Roll'].max()):
+        print 'not in range, try again'
+        Roll = raw_input(int)
 
-#uncomment the below if you want the full list of values
-#print df['Roll','Probability']
+    output = df['Cumulative Prob'][df['Roll']==int(Roll)]
 
+    print 'there is a %s percent chance to roll a %s or higher' % (round(output.values*100,2), Roll)
+
+    print 'would you like to roll again?'
+    again = raw_input()    
+
+    while (again != 'y' and again != 'n'):
+        print 'please enter y or n'        
+        again = raw_input()
